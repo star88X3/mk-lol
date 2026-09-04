@@ -1,0 +1,60 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>mk lol</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <h1 class="title">mk lol</h1>
+
+        <div class="glow-line"></div>
+
+        <section class="text-box">
+            <div id="website-text">Loading...</div>
+        </section>
+
+    </main>
+
+    <script>
+        async function loadContent() {
+            try {
+                const response = await fetch("content.json");
+
+                if (!response.ok) {
+                    throw new Error("Could not load content.json");
+                }
+
+                const data = await response.json();
+
+                const textElement = document.getElementById("website-text");
+
+                // Convert new lines from Python into HTML line breaks.
+                textElement.innerHTML = data.text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\n/g, "<br>");
+
+            } catch (error) {
+                document.getElementById("website-text").textContent =
+                    "Unable to load website text.";
+
+                console.error(error);
+            }
+        }
+
+        loadContent();
+    </script>
+
+</body>
+</html>
+```
