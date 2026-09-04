@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>mk lol</title>
+    <title>MKM Website</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,20 +13,19 @@
 
     <main class="container">
 
-        <h1 class="title">mk lol</h1>
+        <!-- Text -->
+        <div id="text">Loading...</div>
 
-        <div class="glow-line"></div>
-
-        <section class="text-box">
-            <div id="website-text">Loading...</div>
-        </section>
+        <!-- Media -->
+        <div id="media"></div>
 
     </main>
 
     <script>
         async function loadContent() {
             try {
-                const response = await fetch("content.json");
+                // Load content.json
+                const response = await fetch("content.json?cache=" + Date.now());
 
                 if (!response.ok) {
                     throw new Error("Could not load content.json");
@@ -34,23 +33,67 @@
 
                 const data = await response.json();
 
-                const textElement = document.getElementById("website-text");
+                // =========================
+                // TEXT
+                // =========================
 
-                // Convert new lines from Python into HTML line breaks.
-                textElement.innerHTML = data.text
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/\n/g, "<br>");
+                const textElement = document.getElementById("text");
+
+                textElement.textContent = data.text || "";
+
+
+                // =========================
+                // MEDIA
+                // =========================
+
+                const mediaElement = document.getElementById("media");
+
+                // Clear old media
+                mediaElement.innerHTML = "";
+
+                if (data.media && data.media.path) {
+
+                    const mediaPath =
+                        data.media.path + "?cache=" + Date.now();
+
+                    // IMAGE
+                    if (data.media.type === "image") {
+
+                        const img = document.createElement("img");
+
+                        img.src = mediaPath;
+                        img.className = "website-media";
+
+                        img.alt = "Uploaded image";
+
+                        mediaElement.appendChild(img);
+                    }
+
+                    // VIDEO
+                    else if (data.media.type === "video") {
+
+                        const video = document.createElement("video");
+
+                        video.src = mediaPath;
+                        video.className = "website-media";
+
+                        video.controls = true;
+                        video.preload = "metadata";
+
+                        mediaElement.appendChild(video);
+                    }
+                }
 
             } catch (error) {
-                document.getElementById("website-text").textContent =
-                    "Unable to load website text.";
 
                 console.error(error);
+
+                document.getElementById("text").textContent =
+                    "Could not load website content.";
             }
         }
 
+        // Load when page opens
         loadContent();
     </script>
 
