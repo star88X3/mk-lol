@@ -1,7 +1,8 @@
 {
-  "text": "hello this is from mason lolz :3",
-  "media": {
-    "type": "image",
-    "path": "media/current.png"
-  }
+    "text": "tuff",
+    "media": {
+        "type": "image",
+        "path": "media/current.png"
+    },
+    "main_image": ""
 }
