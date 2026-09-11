@@ -3,99 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>MKM Website</title>
-
+    <title>mkm on top lol</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <main class="container">
+<header>
+    <a href="index.html" class="logo">mkm</a>
 
-        <!-- Text -->
-        <div id="text">Loading...</div>
+    <nav>
+        <a href="index.html">home</a>
+        <a href="index.html?page=symbols">symbols</a>
+        <a href="index.html?page=images">images</a>
+    </nav>
+</header>
 
-        <!-- Media -->
-        <div id="media"></div>
+<main id="app"></main>
 
-    </main>
+<script>
+async function getJSON(file) {
+    const response = await fetch(file + "?v=" + Date.now());
 
-    <script>
-        async function loadContent() {
-            try {
-                // Load content.json
-                const response = await fetch("content.json?cache=" + Date.now());
+    if (!response.ok) {
+        throw new Error("Could not load " + file);
+    }
 
-                if (!response.ok) {
-                    throw new Error("Could not load content.json");
-                }
+    return await response.json();
+}
 
-                const data = await response.json();
+function createHome(data) {
+    const page = document.createElement("div");
+    page.className = "page";
 
-                // =========================
-                // TEXT
-                // =========================
+    const title = document.createElement("h1");
+    title.textContent = "mkm";
 
-                const textElement = document.getElementById("text");
+    const small = document.createElement("div");
+    small.className = "subtitle";
+    small.textContent = "mkm on top lol";
 
-                textElement.textContent = data.text || "";
+    page.appendChild(title);
+    page.appendChild(small);
 
+    if (data.main_image) {
+        const mainImage = document.createElement("img");
+        mainImage.src = data.main_image + "?v=" + Date.now();
+        mainImage.className = "main-image";
+        page.appendChild(mainImage);
+    }
 
-                // =========================
-                // MEDIA
-                // =========================
+    const text = document.createElement("div");
+    text.className = "post-text";
+    text.textContent = data.text || "";
 
-                const mediaElement = document.getElementById("media");
+    if (data.text) {
+        page.appendChild(text);
+    }
 
-                // Clear old media
-                mediaElement.innerHTML = "";
+    if (data.media && data.media.path) {
+        const mediaBox = document.createElement("div");
+        mediaBox.className = "post-media";
 
-                if (data.media && data.media.path) {
-
-                    const mediaPath =
-                        data.media.path + "?cache=" + Date.now();
-
-                    // IMAGE
-                    if (data.media.type === "image") {
-
-                        const img = document.createElement("img");
-
-                        img.src = mediaPath;
-                        img.className = "website-media";
-
-                        img.alt = "Uploaded image";
-
-                        mediaElement.appendChild(img);
-                    }
-
-                    // VIDEO
-                    else if (data.media.type === "video") {
-
-                        const video = document.createElement("video");
-
-                        video.src = mediaPath;
-                        video.className = "website-media";
-
-                        video.controls = true;
-                        video.preload = "metadata";
-
-                        mediaElement.appendChild(video);
-                    }
-                }
-
-            } catch (error) {
-
-                console.error(error);
-
-                document.getElementById("text").textContent =
-                    "Could not load website content.";
-            }
+        if (data.media.type === "image") {
+            const image = document.createElement("img");
+            image.src = data.media.path + "?v=" + Date.now();
+            image.className = "website-media";
+            mediaBox.appendChild(image);
         }
 
-        // Load when page opens
-        loadContent();
-    </script>
+        if (data.media.type === "video") {
+            const video = document.createElement("video");
+            video.src = data.media.path + "?v=" + Date.now();
+            video.className = "website-media";
+            video.controls = true;
+            mediaBox.appendChild(video);
+        }
+
+        page.appendChild(mediaBox);
+    }
+
+    return page;
+}
+
+function createSymbols() {
+    const page = document.createElement("div");
+    page.className = "page";
+
+    const title = document.createElement("h1");
+    title.textContent = "symbols";
+
+    const subtitle = document.createElement("div");
+    subtitle.className = "subtitle";
+    subtitle.textContent = "random little symbols";
+
+    page.appendChild(title);
+    page.appendChild(subtitle);
+
+    const groups = [
+        ["★", "☆", "✦", "✧", "✩", "✪", "✫", "✬", "✭", "✮", "✯", "✰"],
+        ["♡", "♥", "♥︎", "ღ", "❤", "❥", "❣", "❦", "❧"],
+        ["🐾", "ฅ", "ฅ^•ﻌ•^ฅ", "ᶻ 𝗓 𐰁", "૮", "ᵔᴥᵔ"],
+        ["→", "←", "↑", "↓", "↗", "↘", "↙", "↖", "➜", "➤"],
+        ["☻", "☺", "☹", "☼", "☾", "☽", "☁", "☄"],
+        ["✦", "✧", "⊹", "⋆", "｡", "°", "˚", "₊", "·"],
+        ["「", "」", "『", "』", "〈", "〉", "《", "》", "【", "】"],
+        ["^_^", "^-^", "._.", "o_o", "O_O", ">_<", "^.^", "x_x"]
+    ];
+
+    const box = document.createElement("div");
+    box.className = "symbols-box";
+
+    groups.forEach(group => {
+        const row = document.createElement("div");
+        row.className = "symbol-row";
+
+        group.forEach(symbol => {
+            const item = document.createElement("span");
+            item.className = "symbol";
+            item.textContent = symbol;
+
+            item.addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(symbol);
+                    item.classList.add("copied");
+
+                    setTimeout(() => {
+                        item.classList.remove("copied");
+                    }, 500);
+                } catch {}
+            });
+
+            row.appendChild(item);
+        });
+
+        box.appendChild(row);
+    });
+
+    page.appendChild(box);
+
+    const hint = document.createElement("div");
+    hint.className = "hint";
+    hint.textContent = "click a symbol to copy it";
+
+    page.appendChild(hint);
+
+    return page;
+}
+
+async function createImages() {
+    const page = document.createElement("div");
+    page.className = "page";
+
+    const title = document.createElement("h1");
+    title.textContent = "image library";
+
+    const subtitle = document.createElement("div");
+    subtitle.className = "subtitle";
+    subtitle.textContent = "stuff i've uploaded";
+
+    page.appendChild(title);
+    page.appendChild(subtitle);
+
+    try {
+        const data = await getJSON("image-library.json");
+
+        const grid = document.createElement("div");
+        grid.className = "image-grid";
+
+        data.images.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "image-card";
+
+            const image = document.createElement("img");
+            image.src = item.path + "?v=" + Date.now();
+            image.loading = "lazy";
+
+            const name = document.createElement("div");
+            name.className = "image-name";
+            name.textContent = item.name;
+
+            card.appendChild(image);
+            card.appendChild(name);
+            grid.appendChild(card);
+        });
+
+        page.appendChild(grid);
+
+    } catch {
+        const error = document.createElement("div");
+        error.textContent = "couldn't load the image library";
+        page.appendChild(error);
+    }
+
+    return page;
+}
+
+async function loadPage() {
+    const app = document.getElementById("app");
+    app.innerHTML = "";
+
+    const params = new URLSearchParams(window.location.search);
+    const page = params.get("page");
+
+    if (page === "symbols") {
+        app.appendChild(createSymbols());
+        return;
+    }
+
+    if (page === "images") {
+        app.appendChild(await createImages());
+        return;
+    }
+
+    try {
+        const data = await getJSON("content.json");
+        app.appendChild(createHome(data));
+    } catch {
+        const error = document.createElement("div");
+        error.className = "page";
+        error.textContent = "couldn't load content";
+        app.appendChild(error);
+    }
+}
+
+loadPage();
+</script>
 
 </body>
 </html>
