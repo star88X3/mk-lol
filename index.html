@@ -21,6 +21,56 @@
 <main id="app"></main>
 
 <script>
+const symbols = [
+    "★",
+    "☆",
+    "✦",
+    "✧",
+    "✩",
+    "✪",
+    "♡",
+    "♥",
+    "♥︎",
+    "ღ",
+    "❤",
+    "❥",
+    "❣",
+    "🐾",
+    "ฅ",
+    "ฅ^•ﻌ•^ฅ",
+    "→",
+    "←",
+    "↑",
+    "↓",
+    "↗",
+    "↘",
+    "↙",
+    "↖",
+    "➜",
+    "➤",
+    "☻",
+    "☺",
+    "☼",
+    "☾",
+    "☽",
+    "☁",
+    "☄",
+    "✦ ✧ ★ ✧ ✦",
+    "♡ love ♡",
+    "🐾 cute paws 🐾",
+    "★ mkm on top ★",
+    "hello world",
+    "made by mkm",
+    "^_^",
+    "^-^",
+    "._.",
+    "o_o",
+    "O_O",
+    ">_<",
+    "^.^",
+    "x_x"
+];
+
 async function getJSON(file) {
     const response = await fetch(file + "?v=" + Date.now());
 
@@ -38,12 +88,7 @@ function createHome(data) {
     const title = document.createElement("h1");
     title.textContent = "mkm";
 
-    const small = document.createElement("div");
-    small.className = "subtitle";
-    small.textContent = "mkm on top lol";
-
     page.appendChild(title);
-    page.appendChild(small);
 
     if (data.main_image) {
         const mainImage = document.createElement("img");
@@ -52,11 +97,10 @@ function createHome(data) {
         page.appendChild(mainImage);
     }
 
-    const text = document.createElement("div");
-    text.className = "post-text";
-    text.textContent = data.text || "";
-
     if (data.text) {
+        const text = document.createElement("div");
+        text.className = "post-text";
+        text.textContent = data.text;
         page.appendChild(text);
     }
 
@@ -76,6 +120,7 @@ function createHome(data) {
             video.src = data.media.path + "?v=" + Date.now();
             video.className = "website-media";
             video.controls = true;
+            video.preload = "metadata";
             mediaBox.appendChild(video);
         }
 
@@ -92,60 +137,45 @@ function createSymbols() {
     const title = document.createElement("h1");
     title.textContent = "symbols";
 
-    const subtitle = document.createElement("div");
-    subtitle.className = "subtitle";
-    subtitle.textContent = "random little symbols";
-
     page.appendChild(title);
-    page.appendChild(subtitle);
-
-    const groups = [
-        ["★", "☆", "✦", "✧", "✩", "✪", "✫", "✬", "✭", "✮", "✯", "✰"],
-        ["♡", "♥", "♥︎", "ღ", "❤", "❥", "❣", "❦", "❧"],
-        ["🐾", "ฅ", "ฅ^•ﻌ•^ฅ", "ᶻ 𝗓 𐰁", "૮", "ᵔᴥᵔ"],
-        ["→", "←", "↑", "↓", "↗", "↘", "↙", "↖", "➜", "➤"],
-        ["☻", "☺", "☹", "☼", "☾", "☽", "☁", "☄"],
-        ["✦", "✧", "⊹", "⋆", "｡", "°", "˚", "₊", "·"],
-        ["「", "」", "『", "』", "〈", "〉", "《", "》", "【", "】"],
-        ["^_^", "^-^", "._.", "o_o", "O_O", ">_<", "^.^", "x_x"]
-    ];
 
     const box = document.createElement("div");
     box.className = "symbols-box";
 
-    groups.forEach(group => {
-        const row = document.createElement("div");
-        row.className = "symbol-row";
+    symbols.forEach(symbolText => {
+        const item = document.createElement("span");
+        item.className = "symbol";
+        item.textContent = symbolText;
 
-        group.forEach(symbol => {
-            const item = document.createElement("span");
-            item.className = "symbol";
-            item.textContent = symbol;
+        item.addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(symbolText);
 
-            item.addEventListener("click", async () => {
-                try {
-                    await navigator.clipboard.writeText(symbol);
-                    item.classList.add("copied");
+                item.classList.add("copied");
 
-                    setTimeout(() => {
-                        item.classList.remove("copied");
-                    }, 500);
-                } catch {}
-            });
+                setTimeout(() => {
+                    item.classList.remove("copied");
+                }, 400);
+            } catch {
+                const textarea = document.createElement("textarea");
+                textarea.value = symbolText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                textarea.remove();
 
-            row.appendChild(item);
+                item.classList.add("copied");
+
+                setTimeout(() => {
+                    item.classList.remove("copied");
+                }, 400);
+            }
         });
 
-        box.appendChild(row);
+        box.appendChild(item);
     });
 
     page.appendChild(box);
-
-    const hint = document.createElement("div");
-    hint.className = "hint";
-    hint.textContent = "click a symbol to copy it";
-
-    page.appendChild(hint);
 
     return page;
 }
@@ -155,14 +185,9 @@ async function createImages() {
     page.className = "page";
 
     const title = document.createElement("h1");
-    title.textContent = "image library";
-
-    const subtitle = document.createElement("div");
-    subtitle.className = "subtitle";
-    subtitle.textContent = "stuff i've uploaded";
+    title.textContent = "images";
 
     page.appendChild(title);
-    page.appendChild(subtitle);
 
     try {
         const data = await getJSON("image-library.json");
@@ -178,12 +203,7 @@ async function createImages() {
             image.src = item.path + "?v=" + Date.now();
             image.loading = "lazy";
 
-            const name = document.createElement("div");
-            name.className = "image-name";
-            name.textContent = item.name;
-
             card.appendChild(image);
-            card.appendChild(name);
             grid.appendChild(card);
         });
 
@@ -191,7 +211,8 @@ async function createImages() {
 
     } catch {
         const error = document.createElement("div");
-        error.textContent = "couldn't load the image library";
+        error.className = "library-error";
+        error.textContent = "couldn't load images";
         page.appendChild(error);
     }
 
