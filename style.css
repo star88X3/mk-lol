@@ -60,12 +60,6 @@ h1 {
     color: #00ffff;
 }
 
-.subtitle {
-    margin-top: 3px;
-    color: #777784;
-    font-size: 14px;
-}
-
 .main-image {
     display: block;
     width: min(600px, 100%);
@@ -105,52 +99,40 @@ video.website-media {
 }
 
 .symbols-box {
-    margin-top: 35px;
-    padding: 22px;
-    background: #101016;
-    border: 1px solid #25252e;
-    border-radius: 12px;
-}
-
-.symbol-row {
+    margin-top: 30px;
     display: flex;
     flex-wrap: wrap;
-    gap: 9px;
-    margin-bottom: 10px;
+    gap: 8px;
+    align-items: flex-start;
 }
 
 .symbol {
-    min-width: 42px;
-    padding: 8px 10px;
-    text-align: center;
-    border-radius: 7px;
-    background: #17171f;
-    color: #e7e7ee;
+    display: inline-block;
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: #111117;
+    border: 1px solid #22222b;
+    color: #e9e9ee;
     cursor: pointer;
     user-select: none;
-    font-size: 20px;
-    transition: transform 0.1s, background 0.1s;
+    font-size: 17px;
+    transition: 0.12s;
 }
 
 .symbol:hover {
-    background: #20202b;
     color: #00ffff;
+    border-color: #00ffff;
     transform: translateY(-2px);
 }
 
 .symbol.copied {
-    background: #ff38d1;
     color: white;
-}
-
-.hint {
-    margin-top: 12px;
-    color: #666672;
-    font-size: 12px;
+    background: #ff38d1;
+    border-color: #ff38d1;
 }
 
 .image-grid {
-    margin-top: 35px;
+    margin-top: 30px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     gap: 15px;
@@ -171,13 +153,9 @@ video.website-media {
     background: #050507;
 }
 
-.image-name {
-    padding: 10px;
-    font-size: 12px;
-    color: #888894;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.library-error {
+    margin-top: 30px;
+    color: #777783;
 }
 
 @media (max-width: 600px) {
